@@ -1,0 +1,4 @@
+fonction a(){
+    value = 1;
+}
+a();
