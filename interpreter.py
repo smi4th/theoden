@@ -10,7 +10,7 @@ reserved={
         'return':'RETURN',
     }
 
-tokens = [ 'NUMBER','MINUS', 'PLUS','TIMES','DIVIDE', 'LPAREN', 'LBRA', 'RBRA',
+tokens = [ 'NUMBER','MINUS', 'PLUS','TIMES','DIVIDE', 'MODULO', 'LPAREN', 'LBRA', 'RBRA',
           'RPAREN', 'OR', 'AND', 'SEMI', 'EGAL', 'NAME', 'INF', 'SUP', 'SUPEG',
           'EGALEGAL','INFEG', 'COMMA']+ list(reserved.values())
 
@@ -18,6 +18,7 @@ t_PLUS = r'\+'
 t_MINUS = r'-' 
 t_TIMES = r'\*' 
 t_DIVIDE = r'/' 
+t_MODULO = r'%'
 t_LPAREN = r'\(' 
 t_RPAREN = r'\)' 
 t_LBRA = r'\{'
@@ -32,6 +33,31 @@ t_SUPEG = r'\>\='
 t_INFEG = r'\<\='
 t_EGALEGAL = r'\=\='
 t_COMMA = r'\,'
+
+DEBUG_WRAPPER, DEBUG_TIME, DEBUG_MEMORY = False, False, False
+
+from sys import argv
+debug_flags = {
+    'DEBUG_WRAPPER': ['--debug-wrapper', '-w'],
+    'DEBUG_TIME': ['--debug-time', '-t'],
+    'DEBUG_MEMORY': ['--debug-memory', '-m']
+}
+
+# Flatten the arguments in argv, checking each individual character for matching flags
+for key, flags in debug_flags.items():
+    globals()[key] = any(any(flag in arg for flag in flags) for arg in argv)
+
+def wrapper(f):
+    def wrap(*args, **kwargs):
+        if DEBUG_WRAPPER:
+            print(f"\033[32m{f.__name__}\033[0m")
+            for arg in args:
+                print(f"\t\033[33m{arg}\033[0m")
+        res = f(*args, **kwargs)
+        if DEBUG_WRAPPER:
+            print(f"\033[34m  {f.__name__} -> {res}\033[0m")
+        return res
+    return wrap
 
 def t_NAME(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -50,8 +76,8 @@ def t_newline(t):
     t.lexer.lineno += t.value.count("\n")
 
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
-    t.lexer.skip(1)
+    errors.push(f"Illegal character '{t.value[0]}' at line {t.lexer.lineno}")
+    errors.crash()
     
 import ply.lex as lex
 lex.lex()
@@ -93,7 +119,7 @@ class pile:
                     continue
                 self.translate(elt[1:])
     
-    def __str__(self):
+    def __repr__(self):
         res = ""
         for i in self.p[::-1]:
             res += str(i) + "\n"
@@ -110,7 +136,7 @@ class Errors(pile):
 memoryStack = [pile()]
 
 callPile = pile()
-callPile.block_keywords = ['functions', 'if', 'for', 'while', 'assign', 'call']
+callPile.block_keywords = ['functions', 'if', 'for', 'while', 'assign', 'call', 'print']
 callPile.function_keywords = ['main', 'linst']
 errors = Errors()
 
@@ -121,7 +147,7 @@ precedence = (
         ('left','AND'), 
         ('nonassoc', 'INF', 'INFEG', 'EGALEGAL', 'SUP'), 
         ('left','PLUS', 'MINUS' ), 
-        ('left','TIMES', 'DIVIDE'), 
+        ('left','TIMES', 'DIVIDE', 'MODULO'),
         )
 
 def p_start(p):
@@ -133,40 +159,65 @@ def p_start(p):
     callPile.translate(p[1])
     callPile.reverse()
 
+    if DEBUG_TIME:
+        from time import time
+        start = time()
     while not callPile.empty():
         evalInst(callPile.pop())
+    if DEBUG_TIME:
+        print(f"Execution time: {time() - start}")
+    
+    if DEBUG_MEMORY:
+        print(f"Memory stack: {[str(i) for i in memoryStack]}")
 
-    print(f"Memory stack: {[str(i) for i in memoryStack]}")
-
+@wrapper
 def evalLinst(linst):
     for inst in linst:
-        evalInst(inst)
-        if not errors.empty(): return
+        if evalInst(inst) == 'return': return 'return'
 
+@wrapper
 def evalInst(inst):
-    if inst[0] == 'linst':
-        evalLinst(inst[1:])
 
     if inst in ['empty', 'linst']:
         return
-    
+
+    if not isinstance(inst, tuple):
+        errors.push(f"Instruction <{inst}> not recognized")
+        errors.crash()
+
+    if inst[0] == 'linst':
+        return evalLinst(inst[1:])
+
     match inst[0]:
         case 'assign':
             memoryStack[-1].setVar(inst[1], evalExpr(inst[2]))
         case 'if':
-            evalCond(inst)
+            return evalCond(inst)
         case 'for':
-            evalFor(inst)
+            return evalFor(inst)
         case 'while':
-            evalWhile(inst)
+            return evalWhile(inst)
         case 'call':
-            evalCallFunction(inst)
+            return evalCallFunction(inst)
         case 'functions':
-            pass # function declaration are already handled
+            # This is a function definition, we don't need to evaluate it, it is already in the functions dictionary
+            pass
+        case 'print':
+            print(evalExpr(inst[1]))
+        case 'return':
+            if inst[1] == 'empty': # No return value
+                memoryStack[-2].setVar('$__return__$', None)
+            else:
+                memoryStack[-2].setVar('$__return__$', evalExpr(inst[1]))
+            memoryStack.pop()
+            return "return"
         case _:
             errors.push(f"Instruction <{inst[0]}> not recognized")
             errors.crash()
+
+    return inst
     
+@wrapper
 def flatten(tup):
 
     if not isinstance(tup, tuple):
@@ -183,14 +234,14 @@ def flatten(tup):
 with open('test.txt', 'r') as file:
     s = file.read()
 
+@wrapper
 def evalCond(inst):
     if evalExpr(inst[1]):
-        evalLinst(inst[2])
+        return evalLinst(inst[2])
     elif inst[-1] != 'empty':
-        evalLinst(inst[-1][1])
+        return evalLinst(inst[-1][1])
     
-    if not errors.empty(): return
-
+@wrapper
 def evalFor(inst):
     memoryStack[-1].push({})
     evalInst(inst[1])
@@ -198,10 +249,9 @@ def evalFor(inst):
         evalLinst(inst[4])
         evalInst(inst[3])
 
-        if not errors.empty(): return
-
     memoryStack[-1].pop()
 
+@wrapper
 def evalWhile(inst):
     memoryStack[-1].push({})
     while evalExpr(inst[1]):
@@ -209,6 +259,7 @@ def evalWhile(inst):
 
     memoryStack[-1].pop()
 
+@wrapper
 def evalCallFunction(inst):
     if inst[1] in functions:
 
@@ -216,31 +267,54 @@ def evalCallFunction(inst):
         funcParams = flatten(functions[inst[1]][0])
 
         if len(funcParams) != len(callParams):
-            errors.push(f"Function <{inst[1]}> takes {len(funcParams)} arguments, {len(callParams)} given\n{inst[1]}({', '.join(callParams)}) -> {inst[1]}({', '.join(funcParams)})")
+            errors.push(f"Function <{inst[1]}> takes {len(funcParams)} arguments, {len(callParams)} given\n{inst[1]}({', '.join((str(c) for c in callParams))}) -> {inst[1]}({', '.join(funcParams)})")
             errors.crash()
 
-        memoryStack.append(pile())
+        tmpPile = pile()
         for fParam, cParam in zip(funcParams, callParams):
-            memoryStack[-1].top()[fParam] = evalExpr(cParam)
+            tmpPile.top()[fParam] = evalExpr(cParam)
 
-        evalLinst(functions[inst[1]][1])
-        memoryStack.pop()
+        memoryStack.append(tmpPile)
 
+        if (functions[inst[1]][1][0] == 'return'):
+            res =  evalInst(functions[inst[1]][1])
+        else:
+            res = evalLinst(functions[inst[1]][1])
+            # memoryStack.pop()
+        return res
+    else:
+        errors.push(f"Function <{inst[1]}> not defined")
+        errors.crash()
+
+@wrapper
 def evalExpr(t):
+
     if isinstance(t, int):
         return t
     
     if isinstance(t, str):
         if memoryStack[-1].search(t) is None:
-            errors.push(f"Variable <{t}> not defined in this scope\nStack:\n{memoryStack[-1]}")
+            errors.push(f"Variable <{t}> not defined in this scope\nStack:\n{memoryStack[::-1]}")
             errors.crash()
         return memoryStack[-1].search(t)
 
-    return {
+    if t[0] == 'call':
+        evalCallFunction(t)
+        if memoryStack[-1].search('$__return__$') is None:
+            errors.push(f"Function <{t[1]}> does not return a value")
+            errors.crash()
+        return memoryStack[-1].search('$__return__$')
+
+    return evalOpertor(t[0], evalExpr(t[1]), evalExpr(t[2]))
+    
+@wrapper
+def evalOpertor(op, x, y):
+    var = {
         '+'     : lambda x, y: x + y,
         '-'     : lambda x, y: x - y,
         '*'     : lambda x, y: x * y,
         '/'     : lambda x, y: x / y,
+        '%'     : lambda x, y: x % y,
         '<'     : lambda x, y: x < y,
         '<='    : lambda x, y: x <= y,
         '>='    : lambda x, y: x >= y,
@@ -248,8 +322,14 @@ def evalExpr(t):
         '>'     : lambda x, y: x > y,
         '&&'    : lambda x, y: x and y,
         '||'    : lambda x, y: x or y
-    }[t[0]](evalExpr(t[1]), evalExpr(t[2]))
-    
+    }
+
+    if op in ['/', '%'] and y == 0:
+        errors.push(f"Division by zero")
+        errors.crash()
+
+    return var[op](x, y)
+
 def p_prog(p):
     '''prog : functions main functions
     | functions main
@@ -278,14 +358,13 @@ def p_return(p):
     else : 
         p[0] = ('return', p[2])
 
-def p_function_inst(p):
-    '''functionInst : functionInst return
-    | return
-    | linst'''
+def p_expression_return(p):
+    '''expression : RETURN expression
+    | RETURN'''
     if len(p)==2 : 
-        p[0] = (p[1])
+        p[0] = ('return', 'empty')
     else : 
-        p[0] = (p[1], p[2])
+        p[0] = ('return', p[2])
 
 def flatten_tuple(t):
     flat_tuple = ()
@@ -297,14 +376,14 @@ def flatten_tuple(t):
     return flat_tuple
 
 def p_function(p):
-    '''function : FUNCTIONDEF NAME LPAREN param RPAREN LBRA functionInst RBRA
-                | FUNCTIONDEF NAME LPAREN RPAREN LBRA functionInst RBRA
+    '''function : FUNCTIONDEF NAME LPAREN param RPAREN LBRA linst RBRA
+                | FUNCTIONDEF NAME LPAREN RPAREN LBRA linst RBRA
                 '''
     
     has_param = isinstance(p[4], tuple)
     has_instructions = (has_param and 'linst' in flatten_tuple(p[7])) or (not has_param and 'linst' in flatten_tuple(p[6]))
     has_return = (has_param and 'return' in flatten_tuple(p[7])) or (not has_param and 'return' in flatten_tuple(p[6]))
-                  
+    
     if has_param and has_instructions and has_return:
         p[0] = (p[2], p[4], p[7][0], p[7][1])
         functions[p[2]] = (p[4], p[7])
@@ -349,7 +428,11 @@ def p_linst(p):
     | statement SEMI
     | linst controlStruct
     | controlStruct
-    | controlStruct linst'''
+    | controlStruct linst
+    | linst expression SEMI
+    | expression SEMI
+    | linst return
+    | return'''
     if len(p)==2 : 
         p[0] = ('linst', p[1])
     else : 
@@ -361,16 +444,16 @@ def p_controlStruct(p):
     | if'''
     p[0] = p[1]
 
-def p_statement_function(p):
-    '''statement : NAME LPAREN paramcall RPAREN
+def p_expression_function(p):
+    '''expression : NAME LPAREN paramcall RPAREN
     | NAME LPAREN RPAREN'''
-    if len(p)==4 : 
+    if len(p)==4:
         p[0] = ('call', p[1], 'empty')
-    else : 
+    else:
         p[0] = ('call', p[1], p[3])
 
 def p_statement_expr(p): 
-    'statement : PRINT LPAREN expression RPAREN' 
+    'statement : PRINT LPAREN expression RPAREN'
     p[0] = ('print',p[3] )
 
 def p_for(p):
@@ -403,10 +486,10 @@ def p_expression_binop_inf(p):
     | expression TIMES expression
     | expression MINUS expression
     | expression DIVIDE expression
+    | expression MODULO expression
     | expression SUP expression
-    | expression SUPEG expression''' 
+    | expression SUPEG expression'''
     p[0] = (p[2],p[1],p[3])
- 
  
 def p_expression_group(p): 
     'expression : LPAREN expression RPAREN' 
@@ -420,12 +503,9 @@ def p_expression_name(p):
     'expression : NAME' 
     p[0] =  p[1]
 
-def p_expression_call(p):
-    'expression : NAME LPAREN paramcall RPAREN'
-    p[0] = ('call', p[1], p[3])
-    
-def p_error(p):    print("Syntax error in input!", p)
-    
+def p_error(p):
+    print("Syntax error in input!", p)
+
 import ply.yacc as yacc
 import ply.yacc as yacc
 import uuid
