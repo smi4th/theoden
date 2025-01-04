@@ -1,0 +1,5 @@
+---TEST OUTPUT---
+---MEMORY---
+a = 50
+b = 500
+---FUNCTIONS---

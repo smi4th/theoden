@@ -1,0 +1,4 @@
+---TEST OUTPUT---
+---MEMORY---
+---FUNCTIONS---
+a = ('empty', ('linst', ('assign', 'value', 1), 'empty'))

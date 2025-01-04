@@ -5,10 +5,16 @@ from evals import evalInst
 from parser import *
 
 from time import time
+from sys import argv
 
-def main():
+def main(entry):
 
-    AST = parse(ENTRY)
+    AST = parse(entry)
+
+    if AST == None:
+        prog.error.push("Syntax error")
+        prog.error.crash()
+
     prog.ast = AST
 
     prog.generateCallStack()
@@ -31,9 +37,21 @@ def main():
     if prog.DEBUG_MEMORY:
         print(f"Memory stack: {[str(i) for i in prog.memoryStack]}")
 
+    if prog.TEST_MODE:
+        prog.testOutput()
 
-with open('test.txt', 'r') as file:
-    ENTRY = file.read()
 
 if __name__ == "__main__":
-    main()
+
+    if '-f' in argv:
+        try:
+            with open(argv[argv.index('-f') + 1], 'r') as file:
+                entry = file.read()
+        except:
+            prog.error.push("File not found")
+            prog.error.crash()
+    else:
+        with open('test.txt', 'r') as file:
+            entry = file.read()
+    
+    main(entry)

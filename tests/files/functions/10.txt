@@ -1,0 +1,7 @@
+fonction a() {
+    return 1;
+}
+fonction b() {
+    return a();
+}
+v = b();

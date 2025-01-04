@@ -1,0 +1,3 @@
+---ERRORS---
+Function <a> did not return any value
+---END---

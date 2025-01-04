@@ -1,0 +1,5 @@
+---TEST OUTPUT---
+---MEMORY---
+a = 21
+b = 45
+---FUNCTIONS---

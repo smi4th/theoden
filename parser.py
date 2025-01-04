@@ -88,9 +88,9 @@ def p_paramcall(p):
     '''paramcall : paramcall COMMA expression
     | expression'''
     if len(p)==2 : 
-        p[0] = ('exp',p[1])
+        p[0] = ('expr',p[1])
     else : 
-        p[0] = ('exp',p[1],p[3] )
+        p[0] = ('expr',p[1],p[3] )
 
 def p_main(p):
     '''main : linst'''

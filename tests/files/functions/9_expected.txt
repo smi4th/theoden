@@ -1,0 +1,6 @@
+---TEST OUTPUT---
+---MEMORY---
+$__return__$ = 21
+resp = 21
+---FUNCTIONS---
+a = (('param', 'arg'), ('linst', ('return', ('+', 'arg', 10))))

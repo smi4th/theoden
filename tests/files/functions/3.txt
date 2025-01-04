@@ -1,0 +1,3 @@
+fonction a(arg) {
+    value = arg;
+}

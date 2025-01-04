@@ -1,0 +1,8 @@
+fonction a(arg) {
+    if (arg == 1) {
+        return 1;
+    } else {
+        return a(arg - 1) + arg;
+    }
+}
+v = a(10);

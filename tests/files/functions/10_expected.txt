@@ -1,0 +1,7 @@
+---TEST OUTPUT---
+---MEMORY---
+$__return__$ = 1
+v = 1
+---FUNCTIONS---
+a = ('empty', ('linst', ('return', 1)))
+b = ('empty', ('linst', ('return', ('call', 'a', 'empty'))))

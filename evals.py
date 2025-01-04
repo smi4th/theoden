@@ -1,6 +1,6 @@
 # evals/controlStructures.py
 
-from utils import wrapper, flatten, Pile, prog
+from utils import wrapper, flatten, flatten_tuple, Pile, prog
 
 @wrapper
 def evalLinst(linst):
@@ -37,10 +37,7 @@ def evalInst(inst):
         case 'print':
             print(evalExpr(inst[1]))
         case 'return':
-            if inst[1] == 'empty': # No return value
-                prog.memoryStack[-2].setVar('$__return__$', None)
-            else:
-                prog.memoryStack[-2].setVar('$__return__$', evalExpr(inst[1]))
+            prog.memoryStack[-2].setVar('$__return__$', evalExpr(inst[1]))
             prog.memoryStack.pop()
             return "return"
         case _:
@@ -51,10 +48,14 @@ def evalInst(inst):
 
 @wrapper
 def evalCond(inst):
+    prog.memoryStack[-1].push({})
+    res = None
     if evalExpr(inst[1]):
-        return evalLinst(inst[2])
+        res = evalLinst(inst[2])
     elif inst[-1] != 'empty':
-        return evalLinst(inst[-1][1])
+        res = evalLinst(inst[-1][1])
+    # prog.memoryStack[-1].pop()
+    return res
     
 @wrapper
 def evalFor(inst):
@@ -86,10 +87,17 @@ def evalExpr(t):
             prog.error.crash()
         return prog.memoryStack[-1].search(t)
 
+    if t[0] == 'expr':
+        return evalExpr(t[1])
+
+    if len(t) != 3:
+        prog.error.push(f"Expression <{t}> not recognized")
+        prog.error.crash()
+
     if t[0] == 'call':
         evalCallFunction(t)
         if prog.memoryStack[-1].search('$__return__$') is None:
-            prog.error.push(f"Function <{t[1]}> does not return a value")
+            prog.error.push(f"Function <{t[1]}> did not return any value")
             prog.error.crash()
         return prog.memoryStack[-1].search('$__return__$')
 
@@ -122,8 +130,9 @@ def evalOpertor(op, x, y):
 def evalCallFunction(inst):
     if inst[1] in prog.functions:
 
-        callParams = flatten(inst[2])
+        callParams = [evalExpr(i) for i in inst[2][1:]] if inst[2] != 'empty' else []
         funcParams = flatten(prog.functions[inst[1]][0])
+
 
         if len(funcParams) != len(callParams):
             prog.error.push(f"Function <{inst[1]}> takes {len(funcParams)} arguments, {len(callParams)} given\n{inst[1]}({', '.join((str(c) for c in callParams))}) -> {inst[1]}({', '.join(funcParams)})")
@@ -136,10 +145,9 @@ def evalCallFunction(inst):
         prog.memoryStack.append(tmpPile)
 
         if (prog.functions[inst[1]][1][0] == 'return'):
-            res =  evalInst(prog.functions[inst[1]][1])
+            res = evalInst(prog.functions[inst[1]][1])
         else:
             res = evalLinst(prog.functions[inst[1]][1])
-            # prog.memoryStack.pop()
         return res
     else:
         prog.error.push(f"Function <{inst[1]}> not defined")

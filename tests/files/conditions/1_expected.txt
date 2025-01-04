@@ -1,0 +1,4 @@
+---TEST OUTPUT---
+---MEMORY---
+a = 2
+---FUNCTIONS---

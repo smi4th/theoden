@@ -1,0 +1,8 @@
+---ERRORS---
+Variable <a> not defined in this scope
+Stack:
+[---CALL STACK---
+{'i': 0}
+{}
+---END---]
+---END---

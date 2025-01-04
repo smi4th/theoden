@@ -81,7 +81,11 @@ class Pile:
         return None
     
     def setVar(self, name, value):
-        self.top()[name] = value
+        for stack in self.p[::-1]:
+            if name in stack:
+                stack[name] = value
+                return
+        self.p[-1][name] = value
 
     def reverse(self):
         self.p = self.p[::-1]
@@ -103,8 +107,14 @@ class Errors(Pile):
         super().__init__()
         self.p = []
     def crash(self):
-        print(f"\033[31m{self}\033[0m", end="\033[37m")
+        if prog.TEST_MODE:
+            print(self)
+        else:
+            print(f"\033[31m{self}\033[0m", end="\033[37m")
         exit(1)
+
+    def __repr__(self):
+        return "---ERRORS---\n" + "\n".join([str(elt) for elt in self.p]) + "\n---END---"
 
 class Program:
     def __init__(self):
@@ -122,14 +132,16 @@ class Program:
         self.DEBUG_TIME = False
         self.DEBUG_MEMORY = False
         self.DEBUG_AST = False
+        self.TEST_MODE = False
         self.loadDebug()
 
     def loadDebug(self):
         debug_flags = {
             'DEBUG_WRAPPER': ['--debug-wrapper', '-w'],
-            'DEBUG_TIME': ['--debug-time', '-t'],
+            'DEBUG_TIME': ['--debug-time', '-s'],
             'DEBUG_MEMORY': ['--debug-memory', '-m'],
             'DEBUG_AST': ['--debug-ast', '-a'],
+            'TEST_MODE': ['--test-mode', '-t'],
         }
 
         # Flatten the arguments in argv, checking each individual character for matching flags
@@ -141,5 +153,16 @@ class Program:
         self.callPile.p = []
         self.callPile.translate(self.ast)
         self.callPile.reverse()
+
+    def testOutput(self):
+        print("---TEST OUTPUT---")
+        print("---MEMORY---")
+        for stack in self.memoryStack:
+            for key, value in stack.top().items():
+                print(f"{key} = {value}")
+
+        print("---FUNCTIONS---")
+        for key, value in self.functions.items():
+            print(f"{key} = {value}")
 
 prog = Program()

@@ -1,0 +1,4 @@
+fonction a(arg) {
+    return arg + 10;
+}
+resp = a(a(1));

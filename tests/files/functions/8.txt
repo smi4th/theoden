@@ -1,0 +1,5 @@
+fonction a(arg1, arg2) {
+    return arg1 + arg2;
+}
+v = 1;
+resp = a(v * 2, v * 3);
