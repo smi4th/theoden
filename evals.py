@@ -90,8 +90,13 @@ def evalExpr(t):
     if t[0] == 'expr':
         return evalExpr(t[1])
 
+    if len(t) == 2:
+
+        return evalOpertor(t[0], evalExpr(t[1]), 0)
+
     if len(t) != 3:
-        prog.error.push(f"Expression <{t}> not recognized")
+
+        prog.error.push(f"Expression <{t}> not recognized, expected 3 elements")
         prog.error.crash()
 
     if t[0] == 'call':
@@ -117,7 +122,9 @@ def evalOpertor(op, x, y):
         '=='    : lambda x, y: x == y,
         '>'     : lambda x, y: x > y,
         '&&'    : lambda x, y: x and y,
-        '||'    : lambda x, y: x or y
+        '||'    : lambda x, y: x or y,
+        '++'    : lambda x, y: x + 1,
+        '--'    : lambda x, y: x - 1,
     }
 
     if op in ['/', '%'] and y == 0:

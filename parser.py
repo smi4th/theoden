@@ -161,8 +161,13 @@ def p_expression_binop_inf(p):
     | expression DIVIDE expression
     | expression MODULO expression
     | expression SUP expression
-    | expression SUPEG expression'''
-    p[0] = (p[2],p[1],p[3])
+    | expression SUPEG expression
+    | expression INC
+    | expression DEC '''
+    if len(p)==4 :
+        p[0] = (p[2],p[1],p[3])
+    else :
+        p[0] = (p[2],p[1])
  
 def p_expression_group(p): 
     'expression : LPAREN expression RPAREN' 
