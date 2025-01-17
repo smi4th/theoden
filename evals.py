@@ -35,7 +35,8 @@ def evalInst(inst):
             # This is a function definition, we don't need to evaluate it, it is already in the functions dictionary
             pass
         case 'print':
-            print(evalExpr(inst[1]))
+            return evalPrint(inst[1])
+            #print(evalExpr(inst[1]))
         case 'return':
             prog.memoryStack[-2].setVar('$__return__$', evalExpr(inst[1]))
             prog.memoryStack.pop()
@@ -45,6 +46,33 @@ def evalInst(inst):
             prog.error.crash()
 
     return inst
+
+dataPrint = []
+
+def dataToPrint(inst):
+
+    if len(inst) == 2:
+        dataPrint.append(evalExpr(inst[1]))
+        return
+    else:
+
+        dataPrint.append(evalExpr(inst[2]))
+
+        return evalPrint(inst[1])
+
+@wrapper
+def evalPrint(inst):
+    global dataPrint
+
+    dataToPrint(inst)
+
+    print(*dataPrint[::-1])
+
+    dataPrint = []
+
+    return
+
+
 
 @wrapper
 def evalCond(inst):
@@ -90,7 +118,7 @@ def evalExpr(t):
     if t[0] == 'expr':
         return evalExpr(t[1])
 
-    if len(t) == 2:
+    if len(t) == 2 and t[0] in ['++', '--']:
 
         return evalOpertor(t[0], evalExpr(t[1]), 0)
 

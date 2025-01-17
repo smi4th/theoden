@@ -126,7 +126,7 @@ def p_expression_function(p):
         p[0] = ('call', p[1], p[3])
 
 def p_statement_expr(p): 
-    'statement : PRINT LPAREN expression RPAREN'
+    '''statement : PRINT LPAREN paramcall RPAREN '''
     p[0] = ('print',p[3] )
 
 def p_for(p):

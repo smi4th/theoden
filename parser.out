@@ -36,7 +36,7 @@ Rule 30    controlStruct -> while
 Rule 31    controlStruct -> if
 Rule 32    expression -> NAME LPAREN paramcall RPAREN
 Rule 33    expression -> NAME LPAREN RPAREN
-Rule 34    statement -> PRINT LPAREN expression RPAREN
+Rule 34    statement -> PRINT LPAREN paramcall RPAREN
 Rule 35    for -> FOR LPAREN statement SEMI expression SEMI statement RPAREN LBRA linst RBRA
 Rule 36    while -> WHILE LPAREN expression RPAREN LBRA linst RBRA
 Rule 37    if -> IF LPAREN expression RPAREN LBRA linst RBRA
@@ -97,7 +97,7 @@ error                :
 Nonterminals, with rules where they appear
 
 controlStruct        : 22 23 24
-expression           : 9 11 17 18 25 26 34 35 36 37 38 39 40 40 41 41 42 42 43 43 44 44 45 45 46 46 47 47 48 48 49 49 50 50 51 51 52 53 54
+expression           : 9 11 17 18 25 26 35 36 37 38 39 40 40 41 41 42 42 43 43 44 44 45 45 46 46 47 47 48 48 49 49 50 50 51 51 52 53 54
 for                  : 29
 function             : 7 8
 functions            : 2 2 3 4 6 7
@@ -105,7 +105,7 @@ if                   : 31
 linst                : 13 14 19 20 22 24 25 27 35 36 37 38 38
 main                 : 2 3 4 5
 param                : 13 15
-paramcall            : 17 32
+paramcall            : 17 32 34
 prog                 : 1
 return               : 27 28
 start                : 0
@@ -137,7 +137,7 @@ state 0
     (26) linst -> . expression SEMI
     (27) linst -> . linst return
     (28) linst -> . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -225,7 +225,7 @@ state 3
     (26) linst -> . expression SEMI
     (27) linst -> . linst return
     (28) linst -> . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -318,7 +318,7 @@ state 6
     (22) linst -> linst . controlStruct
     (25) linst -> linst . expression SEMI
     (27) linst -> linst . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -456,7 +456,7 @@ state 11
     (26) linst -> . expression SEMI
     (27) linst -> . linst return
     (28) linst -> . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -581,7 +581,7 @@ state 13
 
 state 14
 
-    (34) statement -> PRINT . LPAREN expression RPAREN
+    (34) statement -> PRINT . LPAREN paramcall RPAREN
 
     LPAREN          shift and go to state 53
 
@@ -1066,7 +1066,7 @@ state 37
     (22) linst -> linst . controlStruct
     (25) linst -> linst . expression SEMI
     (27) linst -> linst . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -1585,7 +1585,9 @@ state 52
 
 state 53
 
-    (34) statement -> PRINT LPAREN . expression RPAREN
+    (34) statement -> PRINT LPAREN . paramcall RPAREN
+    (17) paramcall -> . paramcall COMMA expression
+    (18) paramcall -> . expression
     (11) expression -> . RETURN expression
     (12) expression -> . RETURN
     (32) expression -> . NAME LPAREN paramcall RPAREN
@@ -1613,7 +1615,8 @@ state 53
     LPAREN          shift and go to state 9
     NUMBER          shift and go to state 19
 
-    expression                     shift and go to state 81
+    paramcall                      shift and go to state 81
+    expression                     shift and go to state 66
 
 state 54
 
@@ -1702,7 +1705,7 @@ state 55
 state 56
 
     (35) for -> FOR LPAREN . statement SEMI expression SEMI statement RPAREN LBRA linst RBRA
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
 
     PRINT           shift and go to state 14
@@ -2666,37 +2669,11 @@ state 80
 
 state 81
 
-    (34) statement -> PRINT LPAREN expression . RPAREN
-    (40) expression -> expression . INF expression
-    (41) expression -> expression . INFEG expression
-    (42) expression -> expression . EGALEGAL expression
-    (43) expression -> expression . AND expression
-    (44) expression -> expression . OR expression
-    (45) expression -> expression . PLUS expression
-    (46) expression -> expression . TIMES expression
-    (47) expression -> expression . MINUS expression
-    (48) expression -> expression . DIVIDE expression
-    (49) expression -> expression . MODULO expression
-    (50) expression -> expression . SUP expression
-    (51) expression -> expression . SUPEG expression
-    (52) expression -> expression . INC
-    (53) expression -> expression . DEC
+    (34) statement -> PRINT LPAREN paramcall . RPAREN
+    (17) paramcall -> paramcall . COMMA expression
 
     RPAREN          shift and go to state 92
-    INF             shift and go to state 39
-    INFEG           shift and go to state 40
-    EGALEGAL        shift and go to state 41
-    AND             shift and go to state 42
-    OR              shift and go to state 43
-    PLUS            shift and go to state 44
-    TIMES           shift and go to state 45
-    MINUS           shift and go to state 46
-    DIVIDE          shift and go to state 47
-    MODULO          shift and go to state 48
-    SUP             shift and go to state 49
-    SUPEG           shift and go to state 50
-    INC             shift and go to state 51
-    DEC             shift and go to state 52
+    COMMA           shift and go to state 91
 
 
 state 82
@@ -2882,10 +2859,10 @@ state 91
 
 state 92
 
-    (34) statement -> PRINT LPAREN expression RPAREN .
+    (34) statement -> PRINT LPAREN paramcall RPAREN .
 
-    SEMI            reduce using rule 34 (statement -> PRINT LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 34 (statement -> PRINT LPAREN expression RPAREN .)
+    SEMI            reduce using rule 34 (statement -> PRINT LPAREN paramcall RPAREN .)
+    RPAREN          reduce using rule 34 (statement -> PRINT LPAREN paramcall RPAREN .)
 
 
 state 93
@@ -2961,7 +2938,7 @@ state 98
     (26) linst -> . expression SEMI
     (27) linst -> . linst return
     (28) linst -> . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3095,7 +3072,7 @@ state 101
     (26) linst -> . expression SEMI
     (27) linst -> . linst return
     (28) linst -> . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3159,7 +3136,7 @@ state 102
     (26) linst -> . expression SEMI
     (27) linst -> . linst return
     (28) linst -> . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3222,7 +3199,7 @@ state 103
     (26) linst -> . expression SEMI
     (27) linst -> . linst return
     (28) linst -> . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3288,7 +3265,7 @@ state 105
     (22) linst -> linst . controlStruct
     (25) linst -> linst . expression SEMI
     (27) linst -> linst . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3342,7 +3319,7 @@ state 105
 state 106
 
     (35) for -> FOR LPAREN statement SEMI expression SEMI . statement RPAREN LBRA linst RBRA
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
 
     PRINT           shift and go to state 14
@@ -3357,7 +3334,7 @@ state 107
     (22) linst -> linst . controlStruct
     (25) linst -> linst . expression SEMI
     (27) linst -> linst . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3416,7 +3393,7 @@ state 108
     (22) linst -> linst . controlStruct
     (25) linst -> linst . expression SEMI
     (27) linst -> linst . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3474,7 +3451,7 @@ state 109
     (22) linst -> linst . controlStruct
     (25) linst -> linst . expression SEMI
     (27) linst -> linst . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3626,7 +3603,7 @@ state 117
     (26) linst -> . expression SEMI
     (27) linst -> . linst return
     (28) linst -> . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3689,7 +3666,7 @@ state 118
     (26) linst -> . expression SEMI
     (27) linst -> . linst return
     (28) linst -> . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3747,7 +3724,7 @@ state 119
     (22) linst -> linst . controlStruct
     (25) linst -> linst . expression SEMI
     (27) linst -> linst . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
@@ -3805,7 +3782,7 @@ state 120
     (22) linst -> linst . controlStruct
     (25) linst -> linst . expression SEMI
     (27) linst -> linst . return
-    (34) statement -> . PRINT LPAREN expression RPAREN
+    (34) statement -> . PRINT LPAREN paramcall RPAREN
     (39) statement -> . NAME EGAL expression
     (29) controlStruct -> . for
     (30) controlStruct -> . while
