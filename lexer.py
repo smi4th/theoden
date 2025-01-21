@@ -14,7 +14,7 @@ reserved={
         'return':'RETURN',
     }
 
-tokens = [ 'INTEGER', 'FLOAT', 'MINUS', 'PLUS','TIMES','DIVIDE', 'MODULO', 'LPAREN', 'LBRA', 'RBRA',
+tokens = [ 'INTEGER', 'FLOAT', 'CHAR', 'MINUS', 'PLUS','TIMES','DIVIDE', 'MODULO', 'LPAREN', 'LBRA', 'RBRA',
           'RPAREN', 'OR', 'AND', 'SEMI', 'EGAL', 'NAME', 'INF', 'SUP', 'SUPEG',
           'EGALEGAL','INFEG', 'COMMA','INC','DEC']+ list(reserved.values())
 
@@ -54,6 +54,11 @@ def t_INTEGER(t):
 def t_FLOAT(t):
     r'\d+\.\d+'
     t.value = float(t.value)
+    return t
+
+def t_CHAR(t):
+    r'\'[a-zA-Z0-9]\''
+    t.value = t.value[1]
     return t
 
 t_ignore = " \t"

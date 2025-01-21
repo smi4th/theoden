@@ -89,3 +89,11 @@ def test_sub_2():
 def test_sub_3():
     system('py main.py -f tests/files/assign/sub/3.txt -t > tests/files/assign/sub/3.out.txt')
     assert check('tests/files/assign/sub/3.out.txt', 'tests/files/assign/sub/3_expected.txt')
+
+def test_chars_1():
+    system('py main.py -f tests/files/assign/chars/1.txt -t > tests/files/assign/chars/1.out.txt')
+    assert check('tests/files/assign/chars/1.out.txt', 'tests/files/assign/chars/1_expected.txt')
+
+def test_chars_2():
+    system('py main.py -f tests/files/assign/chars/2.txt -t > tests/files/assign/chars/2.out.txt')
+    assert check('tests/files/assign/chars/2.out.txt', 'tests/files/assign/chars/2_expected.txt')

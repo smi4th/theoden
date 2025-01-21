@@ -21,3 +21,11 @@ def test_4():
 def test_5():
     system('py main.py -f tests/files/conditions/5.txt -t > tests/files/conditions/5.out.txt')
     assert check('tests/files/conditions/5.out.txt', 'tests/files/conditions/5_expected.txt')
+
+def test_6():
+    system('py main.py -f tests/files/conditions/6.txt -t > tests/files/conditions/6.out.txt')
+    assert check('tests/files/conditions/6.out.txt', 'tests/files/conditions/6_expected.txt')
+
+def test_7():
+    system('py main.py -f tests/files/conditions/7.txt -t > tests/files/conditions/7.out.txt')
+    assert check('tests/files/conditions/7.out.txt', 'tests/files/conditions/7_expected.txt')

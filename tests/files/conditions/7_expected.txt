@@ -1,0 +1,4 @@
+---TEST OUTPUT---
+---MEMORY---
+a = ('int', 1)
+---FUNCTIONS---

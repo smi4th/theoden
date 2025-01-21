@@ -189,6 +189,10 @@ def p_expression_float(p):
     else :
         p[0] = ('float',-p[2])
 
+def p_expression_char(p):
+    'expression : CHAR'
+    p[0] = ('char',p[1])
+
 def p_expression_name(p):
     '''expression : NAME
     | MINUS NAME'''

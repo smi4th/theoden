@@ -73,15 +73,19 @@ def evalPrint(inst):
 def evalCond(inst):
     prog.memoryStack[-1].push({})
     res = None
+
     if evalExpr(inst[1])[1]:
         res = evalLinst(inst[2])
     elif inst[-1] != 'empty':
         res = evalLinst(inst[-1][1])
+
     returnValue = prog.memoryStack[-1].search('return')
     prog.memoryStack[-1].pop()
+    
     if returnValue is not None:
         prog.memoryStack[-1].setVar('return', returnValue)
         return 'return'
+    
     return res
     
 @wrapper
@@ -119,6 +123,8 @@ def evalExpr(t):
         case 'float':
             return t
         case 'bool':
+            return t
+        case 'char':
             return t
 
     if t[0] == 'expr':
@@ -167,12 +173,36 @@ def evalNumberOperator(op, x, y, type):
 
     return (type, var[op](x, y))
 
+def evalBoolOperator(op, x, y):
+    var = {
+        '&&'    : lambda x, y: x and y,
+        '||'    : lambda x, y: x or y,
+        '=='    : lambda x, y: x == y,
+    }
+
+    return ('bool', var[op](x, y))
+
+def evalCharOperator(op, x, y):
+    var = {
+        '<'     : lambda x, y: x < y,
+        '<='    : lambda x, y: x <= y,
+        '>='    : lambda x, y: x >= y,
+        '=='    : lambda x, y: x == y,
+        '>'     : lambda x, y: x > y,
+    }
+
+    return ('bool', var[op](x, y))
+
 @wrapper
 def evalOpertor(op, x, y):
     if x[0] == y[0] == 'int':
         return evalNumberOperator(op, x[1], y[1], 'int')
     if x[0] == y[0] == 'float':
         return evalNumberOperator(op, x[1], y[1], 'float')
+    if x[0] == y[0] == 'bool':
+        return evalBoolOperator(op, x[1], y[1])
+    if x[0] == y[0] == 'char':
+        return evalCharOperator(op, x[1], y[1])
 
 @wrapper
 def evalFunction(inst):

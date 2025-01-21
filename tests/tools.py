@@ -6,7 +6,7 @@ def check(output, expected):
 if __name__ == '__main__':
 
     dirs = [
-        # 'conditions',
+        'conditions',
         # 'for',
         # 'functions',
         # 'while',
@@ -15,7 +15,8 @@ if __name__ == '__main__':
         # 'assign/div',
         # 'assign/mod',
         # 'assign/mul',
-        'assign/number',
+        # 'assign/number',
+        'assign/chars',
         # 'assign/sub',
     ]
 
