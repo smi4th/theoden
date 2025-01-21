@@ -121,7 +121,10 @@ def evalExpr(t):
 
     if len(t) == 2 and t[0] in ['++', '--']:
 
-        return evalOpertor(t[0], evalExpr(t[1]), 0)
+        res = evalOpertor(t[0][0], evalExpr(t[1]), 1)
+
+        prog.memoryStack[-1].setVar(t[1], res)
+        return res
 
     if len(t) != 3:
 
