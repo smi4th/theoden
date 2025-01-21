@@ -1,0 +1,5 @@
+---TEST OUTPUT---
+---MEMORY---
+v = 55
+---FUNCTIONS---
+fibo = (('param', 'n'), ('linst', ('if', ('<=', 'n', 1), ('linst', ('return', 'n')), 'empty'), ('linst', ('return', ('+', ('call', 'fibo', ('expr', ('-', 'n', 1))), ('call', 'fibo', ('expr', ('-', 'n', 2))))))))

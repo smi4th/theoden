@@ -49,3 +49,7 @@ def test_11():
 def test_12():
     system('py main.py -f tests/files/functions/12.txt -t > tests/files/functions/12.out.txt')
     assert check('tests/files/functions/12.out.txt', 'tests/files/functions/12_expected.txt')
+
+def test_13():
+    system('py main.py -f tests/files/functions/13.txt -t > tests/files/functions/13.out.txt')
+    assert check('tests/files/functions/13.out.txt', 'tests/files/functions/13_expected.txt')

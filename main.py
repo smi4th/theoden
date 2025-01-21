@@ -3,9 +3,9 @@
 from utils import printTreeGraph, prog
 from evals import evalInst
 from parser import *
+import argparse
 
 from time import time
-from sys import argv
 
 def main(entry):
 
@@ -43,9 +43,18 @@ def main(entry):
 
 if __name__ == "__main__":
 
-    if '-f' in argv:
+    parser = argparse.ArgumentParser(description='Run a program written in the language')
+    parser.add_argument('-f', '--file', type=str, help='File to run', required=False)
+    parser.add_argument('-t', '--test', action='store_true', help='Run in test mode', required=False)
+    parser.add_argument('-w', '--wrapper', action='store_true', help='Debug wrapper', required=False)
+    parser.add_argument('-s', '--time', action='store_true', help='Debug time', required=False)
+    parser.add_argument('-m', '--memory', action='store_true', help='Debug memory', required=False)
+
+    args = parser.parse_args()
+
+    if args.file:
         try:
-            with open(argv[argv.index('-f') + 1], 'r') as file:
+            with open(args.file, 'r') as file:
                 entry = file.read()
         except:
             prog.error.push("File not found")
@@ -53,5 +62,10 @@ if __name__ == "__main__":
     else:
         with open('test.txt', 'r') as file:
             entry = file.read()
+    
+    prog.TEST_MODE = args.test
+    prog.DEBUG_WRAPPER = args.wrapper
+    prog.DEBUG_TIME = args.time
+    prog.DEBUG_MEMORY = args.memory
     
     main(entry)
