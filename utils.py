@@ -158,8 +158,9 @@ class Program:
         print("---TEST OUTPUT---")
         print("---MEMORY---")
         for stack in self.memoryStack:
-            for key, value in stack.top().items():
-                print(f"{key} = {value}")
+            for s in stack.p:
+                for key, value in s.items():
+                    print(f"{key} = {value}")
 
         print("---FUNCTIONS---")
         for key, value in self.functions.items():

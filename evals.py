@@ -39,7 +39,7 @@ def evalInst(inst):
             #print(evalExpr(inst[1]))
         case 'return':
             prog.memoryStack[-2].setVar('$__return__$', evalExpr(inst[1]))
-            prog.memoryStack.pop()
+            # prog.memoryStack.pop()
             return "return"
         case _:
             prog.error.push(f"Instruction <{inst[0]}> not recognized")
@@ -72,8 +72,6 @@ def evalPrint(inst):
 
     return
 
-
-
 @wrapper
 def evalCond(inst):
     prog.memoryStack[-1].push({})
@@ -82,7 +80,7 @@ def evalCond(inst):
         res = evalLinst(inst[2])
     elif inst[-1] != 'empty':
         res = evalLinst(inst[-1][1])
-    # prog.memoryStack[-1].pop()
+    prog.memoryStack[-1].pop()
     return res
     
 @wrapper
