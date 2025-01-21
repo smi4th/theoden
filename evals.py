@@ -1,6 +1,6 @@
-# evals/controlStructures.py
+# evals.py
 
-from utils import wrapper, flatten, flatten_tuple, Pile, prog
+from utils import wrapper, flatten, Pile, prog, isTailRecursion
 
 @wrapper
 def evalLinst(linst):

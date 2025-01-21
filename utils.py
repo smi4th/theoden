@@ -45,6 +45,29 @@ def flatten_tuple(t):
     return flat_tuple
 
 @wrapper
+def isTailRecursion(linst):
+    for ret in extract_returns(linst):
+        # if the return is a call to the same function
+        if ret[1][0] == 'call' and ret[1][1] == linst[0][0]:
+            return True
+        
+        # if the return is just a variable or a value
+        if isinstance(ret[1], str) or isinstance(ret[1], int):
+            return True
+        
+    return False
+
+def extract_returns(tup):
+    result = []
+    if isinstance(tup, tuple):
+        if tup[0] == 'return':
+            result.append(tup)
+        # Recursively process the rest of the tuple
+        for item in tup[1:]:
+            result.extend(extract_returns(item))
+    return result
+
+@wrapper
 def flatten(tup):
 
     if not isinstance(tup, tuple):

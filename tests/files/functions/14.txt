@@ -1,0 +1,9 @@
+fonction functionNAME(n, acc) {
+    if (n == 0) {
+        return acc;
+    } else {
+        return functionNAME(n - 1, acc + 1);
+    }
+}
+
+functionNAME(5, 1);

@@ -9,7 +9,7 @@ if __name__ == '__main__':
         # 'conditions',
         # 'for',
         # 'functions',
-        'while',
+        # 'while',
         # 'assign/add',
         # 'assign/complex',
         # 'assign/div',
