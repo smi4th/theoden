@@ -133,21 +133,6 @@ class Program:
         self.DEBUG_MEMORY = False
         self.DEBUG_AST = False
         self.TEST_MODE = False
-        self.loadDebug()
-
-    def loadDebug(self):
-        debug_flags = {
-            'DEBUG_WRAPPER': ['--debug-wrapper', '-w'],
-            'DEBUG_TIME': ['--debug-time', '-s'],
-            'DEBUG_MEMORY': ['--debug-memory', '-m'],
-            'DEBUG_AST': ['--debug-ast', '-a'],
-            'TEST_MODE': ['--test-mode', '-t'],
-        }
-
-        # Flatten the arguments in argv, checking each individual character for matching flags
-        for key, flags in debug_flags.items():
-            # globals()[key] = any(any(flag in arg for flag in flags) for arg in argv)
-            setattr(self, key, any(any(flag in arg for flag in flags) for arg in argv))
 
     def generateCallStack(self):
         self.callPile.p = []

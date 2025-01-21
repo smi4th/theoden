@@ -98,8 +98,10 @@ def evalFor(inst):
 def evalWhile(inst):
     prog.memoryStack[-1].push({})
     while evalExpr(inst[1]):
-        evalLinst(inst[2])
-
+        res = evalLinst(inst[2])
+        if res == 'return':
+            prog.memoryStack[-1].pop()
+            return 'return'
     prog.memoryStack[-1].pop()
 
 @wrapper

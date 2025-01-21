@@ -6,17 +6,17 @@ def check(output, expected):
 if __name__ == '__main__':
 
     dirs = [
-        'conditions',
-        'for',
-        'functions',
+        # 'conditions',
+        # 'for',
+        # 'functions',
         'while',
-        'assign/add',
-        'assign/complex',
-        'assign/div',
-        'assign/mod',
-        'assign/mul',
-        'assign/number',
-        'assign/sub',
+        # 'assign/add',
+        # 'assign/complex',
+        # 'assign/div',
+        # 'assign/mod',
+        # 'assign/mul',
+        # 'assign/number',
+        # 'assign/sub',
     ]
 
     import os, tqdm

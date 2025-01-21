@@ -23,7 +23,6 @@ def main(entry):
         printTreeGraph(AST)
         print(prog.callPile)
 
-
     if prog.DEBUG_TIME:
         start = time()
 
@@ -32,7 +31,6 @@ def main(entry):
     
     if prog.DEBUG_TIME:
         print(f"Execution time: {time() - start}")
-
 
     if prog.DEBUG_MEMORY:
         print(f"Memory stack: {[str(i) for i in prog.memoryStack]}")
@@ -49,6 +47,7 @@ if __name__ == "__main__":
     parser.add_argument('-w', '--wrapper', action='store_true', help='Debug wrapper', required=False)
     parser.add_argument('-s', '--time', action='store_true', help='Debug time', required=False)
     parser.add_argument('-m', '--memory', action='store_true', help='Debug memory', required=False)
+    parser.add_argument('-a', '--ast', action='store_true', help='Debug AST', required=False)
 
     args = parser.parse_args()
 
@@ -67,5 +66,6 @@ if __name__ == "__main__":
     prog.DEBUG_WRAPPER = args.wrapper
     prog.DEBUG_TIME = args.time
     prog.DEBUG_MEMORY = args.memory
+    prog.DEBUG_AST = args.ast
     
     main(entry)
