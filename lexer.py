@@ -14,7 +14,7 @@ reserved={
         'return':'RETURN',
     }
 
-tokens = [ 'NUMBER','MINUS', 'PLUS','TIMES','DIVIDE', 'MODULO', 'LPAREN', 'LBRA', 'RBRA',
+tokens = [ 'INTEGER', 'FLOAT', 'MINUS', 'PLUS','TIMES','DIVIDE', 'MODULO', 'LPAREN', 'LBRA', 'RBRA',
           'RPAREN', 'OR', 'AND', 'SEMI', 'EGAL', 'NAME', 'INF', 'SUP', 'SUPEG',
           'EGALEGAL','INFEG', 'COMMA','INC','DEC']+ list(reserved.values())
 
@@ -46,9 +46,14 @@ def t_NAME(t):
     t.type = reserved.get(t.value,'NAME')    # Check for reserved words
     return t
 
-def t_NUMBER(t): 
-    r'\d+' 
+def t_INTEGER(t): 
+    r'\d+'
     t.value = int(t.value) 
+    return t
+
+def t_FLOAT(t):
+    r'\d+\.\d+'
+    t.value = float(t.value)
     return t
 
 t_ignore = " \t"

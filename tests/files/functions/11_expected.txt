@@ -1,5 +1,5 @@
 ---TEST OUTPUT---
 ---MEMORY---
-v = 0
+v = ('int', 0)
 ---FUNCTIONS---
-func = (('param', 'n'), ('linst', ('linst', ('linst', ('assign', 'res', 0), 'empty'), ('if', ('<=', 'n', 1), ('linst', ('assign', 'res', 1), 'empty'), 'empty')), ('return', 'res')))
+func = (('param', 'n'), ('linst', ('linst', ('linst', ('assign', 'res', ('int', 0)), 'empty'), ('if', ('<=', ('var', 'n'), ('int', 1)), ('linst', ('assign', 'res', ('int', 1)), 'empty'), 'empty')), ('return', ('var', 'res'))))

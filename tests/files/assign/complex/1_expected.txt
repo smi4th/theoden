@@ -1,4 +1,4 @@
 ---TEST OUTPUT---
 ---MEMORY---
-a = 8.5
+a = ('float', 8.5)
 ---FUNCTIONS---

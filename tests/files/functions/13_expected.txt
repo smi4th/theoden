@@ -1,5 +1,5 @@
 ---TEST OUTPUT---
 ---MEMORY---
-v = 55
+v = ('int', 55)
 ---FUNCTIONS---
-fibo = (('param', 'n'), ('linst', ('if', ('<=', 'n', 1), ('linst', ('return', 'n')), 'empty'), ('linst', ('return', ('+', ('call', 'fibo', ('expr', ('-', 'n', 1))), ('call', 'fibo', ('expr', ('-', 'n', 2))))))))
+fibo = (('param', 'n'), ('linst', ('if', ('<=', ('var', 'n'), ('int', 1)), ('linst', ('return', ('var', 'n'))), 'empty'), ('linst', ('return', ('+', ('call', 'fibo', ('expr', ('-', ('var', 'n'), ('int', 1)))), ('call', 'fibo', ('expr', ('-', ('var', 'n'), ('int', 2)))))))))

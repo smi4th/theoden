@@ -1,5 +1,5 @@
 ---TEST OUTPUT---
 ---MEMORY---
-a = 21
-b = 45
+a = ('int', 21)
+b = ('int', 45)
 ---FUNCTIONS---

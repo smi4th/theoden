@@ -1,4 +1,4 @@
 ---TEST OUTPUT---
 ---MEMORY---
-a = 0
+a = ('int', 0)
 ---FUNCTIONS---

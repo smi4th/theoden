@@ -1,5 +1,5 @@
 ---TEST OUTPUT---
 ---MEMORY---
-a = 10
-b = -9
+a = ('int', 10)
+b = ('int', -9)
 ---FUNCTIONS---

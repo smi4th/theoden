@@ -173,13 +173,17 @@ def p_expression_group(p):
     'expression : LPAREN expression RPAREN' 
     p[0] = p[2] 
     
-def p_expression_number(p): 
-    'expression : NUMBER' 
-    p[0] = p[1] 
+def p_expression_integer(p): 
+    'expression : INTEGER' 
+    p[0] = ('int', p[1])
     
+def p_expression_float(p):
+    'expression : FLOAT'
+    p[0] = ('float', p[1])
+
 def p_expression_name(p): 
     'expression : NAME' 
-    p[0] =  p[1]
+    p[0] = ('var', p[1])
 
 def p_error(p):
     print("Syntax error in input!", p)

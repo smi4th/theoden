@@ -1,5 +1,5 @@
 ---TEST OUTPUT---
 ---MEMORY---
-v = 1
+v = ('int', 1)
 ---FUNCTIONS---
-a = (('param', 'arg'), ('linst', ('if', ('==', 'arg', 1), ('linst', ('return', 1)), 'empty'), ('linst', ('return', 0))))
+a = (('param', 'arg'), ('linst', ('if', ('==', ('var', 'arg'), ('int', 1)), ('linst', ('return', ('int', 1))), 'empty'), ('linst', ('return', ('int', 0)))))

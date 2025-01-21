@@ -1,4 +1,4 @@
 ---TEST OUTPUT---
 ---MEMORY---
 ---FUNCTIONS---
-a = ('empty', ('linst', ('assign', 'value', 1), 'empty'))
+a = ('empty', ('linst', ('assign', 'value', ('int', 1)), 'empty'))

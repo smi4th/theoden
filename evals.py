@@ -73,7 +73,7 @@ def evalPrint(inst):
 def evalCond(inst):
     prog.memoryStack[-1].push({})
     res = None
-    if evalExpr(inst[1]):
+    if evalExpr(inst[1])[1]:
         res = evalLinst(inst[2])
     elif inst[-1] != 'empty':
         res = evalLinst(inst[-1][1])
@@ -88,7 +88,7 @@ def evalCond(inst):
 def evalFor(inst):
     prog.memoryStack[-1].push({})
     evalInst(inst[1])
-    while evalExpr(inst[2]):
+    while evalExpr(inst[2])[1]:
         evalLinst(inst[4])
         evalInst(inst[3])
 
@@ -97,7 +97,7 @@ def evalFor(inst):
 @wrapper
 def evalWhile(inst):
     prog.memoryStack[-1].push({})
-    while evalExpr(inst[1]):
+    while evalExpr(inst[1])[1]:
         res = evalLinst(inst[2])
         if res == 'return':
             prog.memoryStack[-1].pop()
@@ -107,14 +107,19 @@ def evalWhile(inst):
 @wrapper
 def evalExpr(t):
 
-    if isinstance(t, int):
-        return t
-    
-    if isinstance(t, str):
-        if prog.memoryStack[-1].search(t) is None:
-            prog.error.push(f"Variable <{t}> not defined in this scope\nStack:\n{prog.memoryStack[::-1]}")
-            prog.error.crash()
-        return prog.memoryStack[-1].search(t)
+    match t[0]:
+        case 'int':
+            return t
+        case 'var':
+            var = prog.memoryStack[-1].search(t[1])
+            if var is None:
+                prog.error.push(f"Variable <{t[1]}> not defined in this scope\nStack:\n{prog.memoryStack[::-1]}")
+                prog.error.crash()
+            return var
+        case 'float':
+            return t
+        case 'bool':
+            return t
 
     if t[0] == 'expr':
         return evalExpr(t[1])
@@ -126,18 +131,13 @@ def evalExpr(t):
         prog.memoryStack[-1].setVar(t[1], res)
         return res
 
-    if len(t) != 3:
-
-        prog.error.push(f"Expression <{t}> not recognized, expected 3 elements")
-        prog.error.crash()
-
     if t[0] == 'call':
         return evalFunction(t)
 
     return evalOpertor(t[0], evalExpr(t[1]), evalExpr(t[2]))
-    
+
 @wrapper
-def evalOpertor(op, x, y):
+def evalIntOperator(op, x, y):
     var = {
         '+'     : lambda x, y: x + y,
         '-'     : lambda x, y: x - y,
@@ -159,7 +159,19 @@ def evalOpertor(op, x, y):
         prog.error.push(f"Division by zero")
         prog.error.crash()
 
-    return var[op](x, y)
+    if op in ['<', '<=', '>=', '==', '>', '&&', '||']:
+        return ('bool', var[op](x, y))
+    
+    if op in ['/', '%']:
+        return ('float', var[op](x, y))
+
+    return ('int', var[op](x, y))
+
+@wrapper
+def evalOpertor(op, x, y):
+    if x[0] == y[0] == 'int':
+        # both are integers
+        return evalIntOperator(op, x[1], y[1])
 
 @wrapper
 def evalFunction(inst):

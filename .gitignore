@@ -5,3 +5,4 @@ parsetab.py
 .pytest_cache
 __pycache__
 tests/__pycache__
+parser.out

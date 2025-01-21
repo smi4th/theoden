@@ -1,4 +1,4 @@
 ---TEST OUTPUT---
 ---MEMORY---
 ---FUNCTIONS---
-a = (('param', ('param', 'arg1'), 'arg2'), ('linst', ('return', ('+', 'arg1', 'arg2'))))
+a = (('param', ('param', 'arg1'), 'arg2'), ('linst', ('return', ('+', ('var', 'arg1'), ('var', 'arg2')))))

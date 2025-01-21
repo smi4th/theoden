@@ -1,0 +1,4 @@
+---TEST OUTPUT---
+---MEMORY---
+---FUNCTIONS---
+functionNAME = (('param', ('param', 'n'), 'acc'), ('linst', ('if', ('==', ('var', 'n'), ('int', 0)), ('linst', ('return', ('var', 'acc'))), ('else', ('linst', ('return', ('call', 'functionNAME', ('expr', ('expr', ('-', ('var', 'n'), ('int', 1))), ('+', ('var', 'acc'), ('int', 1))))))))))

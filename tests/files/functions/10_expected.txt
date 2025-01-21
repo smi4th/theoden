@@ -1,6 +1,6 @@
 ---TEST OUTPUT---
 ---MEMORY---
-v = 1
+v = ('int', 1)
 ---FUNCTIONS---
-a = ('empty', ('linst', ('return', 1)))
+a = ('empty', ('linst', ('return', ('int', 1))))
 b = ('empty', ('linst', ('return', ('call', 'a', 'empty'))))
