@@ -1,4 +1,6 @@
-__pycache__/*
 *.out.txt
 img/*
 parsetab.py
+.idea
+.pytest_cache
+__pycache__
