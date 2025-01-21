@@ -41,3 +41,11 @@ def test_9():
 def test_10():
     system('py main.py -f tests/files/functions/10.txt -t > tests/files/functions/10.out.txt')
     assert check('tests/files/functions/10.out.txt', 'tests/files/functions/10_expected.txt')
+
+def test_11():
+    system('py main.py -f tests/files/functions/11.txt -t > tests/files/functions/11.out.txt')
+    assert check('tests/files/functions/11.out.txt', 'tests/files/functions/11_expected.txt')
+
+def test_12():
+    system('py main.py -f tests/files/functions/12.txt -t > tests/files/functions/12.out.txt')
+    assert check('tests/files/functions/12.out.txt', 'tests/files/functions/12_expected.txt')

@@ -30,17 +30,14 @@ def evalInst(inst):
         case 'while':
             return evalWhile(inst)
         case 'call':
-            return evalCallFunction(inst)
+            return evalFunction(inst)
         case 'functions':
-            # This is a function definition, we don't need to evaluate it, it is already in the functions dictionary
-            pass
+            pass # function definition are already handled in the parser
         case 'print':
             return evalPrint(inst[1])
-            #print(evalExpr(inst[1]))
         case 'return':
-            prog.memoryStack[-2].setVar('$__return__$', evalExpr(inst[1]))
-            # prog.memoryStack.pop()
-            return "return"
+            prog.memoryStack[-1].setVar('return', evalExpr(inst[1]))
+            return 'return'
         case _:
             prog.error.push(f"Instruction <{inst[0]}> not recognized")
             prog.error.crash()
@@ -80,7 +77,11 @@ def evalCond(inst):
         res = evalLinst(inst[2])
     elif inst[-1] != 'empty':
         res = evalLinst(inst[-1][1])
+    returnValue = prog.memoryStack[-1].search('return')
     prog.memoryStack[-1].pop()
+    if returnValue is not None:
+        prog.memoryStack[-1].setVar('return', returnValue)
+        return 'return'
     return res
     
 @wrapper
@@ -126,11 +127,7 @@ def evalExpr(t):
         prog.error.crash()
 
     if t[0] == 'call':
-        evalCallFunction(t)
-        if prog.memoryStack[-1].search('$__return__$') is None:
-            prog.error.push(f"Function <{t[1]}> did not return any value")
-            prog.error.crash()
-        return prog.memoryStack[-1].search('$__return__$')
+        return evalFunction(t)
 
     return evalOpertor(t[0], evalExpr(t[1]), evalExpr(t[2]))
     
@@ -160,28 +157,41 @@ def evalOpertor(op, x, y):
     return var[op](x, y)
 
 @wrapper
-def evalCallFunction(inst):
-    if inst[1] in prog.functions:
+def evalFunction(inst):
 
-        callParams = [evalExpr(i) for i in inst[2][1:]] if inst[2] != 'empty' else []
-        funcParams = flatten(prog.functions[inst[1]][0])
-
-
-        if len(funcParams) != len(callParams):
-            prog.error.push(f"Function <{inst[1]}> takes {len(funcParams)} arguments, {len(callParams)} given\n{inst[1]}({', '.join((str(c) for c in callParams))}) -> {inst[1]}({', '.join(funcParams)})")
-            prog.error.crash()
-
-        tmpPile = Pile()
-        for fParam, cParam in zip(funcParams, callParams):
-            tmpPile.top()[fParam] = evalExpr(cParam)
-
-        prog.memoryStack.append(tmpPile)
-
-        if (prog.functions[inst[1]][1][0] == 'return'):
-            res = evalInst(prog.functions[inst[1]][1])
-        else:
-            res = evalLinst(prog.functions[inst[1]][1])
-        return res
-    else:
+    # if the function is not defined
+    if inst[1] not in prog.functions:
         prog.error.push(f"Function <{inst[1]}> not defined")
         prog.error.crash()
+
+    # if the function is defined
+    tmp = Pile()
+    tmp.push({})
+
+    # if the function has arguments
+    if inst[2] != 'empty':
+        # check if the number of arguments is correct
+        
+        args = inst[2][1:] # values passed to the function
+        params = flatten(prog.functions[inst[1]][0])
+
+        if len(args) != len(params):
+            prog.error.push(f"Function <{inst[1]}> expected {len(params)} arguments, got {len(args)}")
+            prog.error.crash()
+
+        # assign the values to the parameters
+        for i in range(len(args)):
+            tmp.setVar(params[i], evalExpr(args[i]))
+
+    prog.memoryStack.append(tmp)
+
+    # execute the function
+    evalLinst(prog.functions[inst[1]][1])
+
+    # get the return value
+    res = prog.memoryStack[-1].search('return')
+    
+    # pop the stack
+    prog.memoryStack.pop()
+
+    return res
