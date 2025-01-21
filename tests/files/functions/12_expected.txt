@@ -1,3 +1,5 @@
----ERRORS---
-Function <a> did not return any value
----END---
+---TEST OUTPUT---
+---MEMORY---
+v = 1
+---FUNCTIONS---
+a = (('param', 'arg'), ('linst', ('if', ('==', 'arg', 1), ('linst', ('return', 1)), 'empty'), ('linst', ('return', 0))))

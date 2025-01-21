@@ -1,7 +1,6 @@
 ---TEST OUTPUT---
 ---MEMORY---
 v = 1
-$__return__$ = 5
 resp = 5
 ---FUNCTIONS---
 a = (('param', ('param', 'arg1'), 'arg2'), ('linst', ('return', ('+', 'arg1', 'arg2'))))

@@ -1,6 +1,5 @@
 ---TEST OUTPUT---
 ---MEMORY---
-$__return__$ = 1
 v = 1
 ---FUNCTIONS---
 a = ('empty', ('linst', ('return', 1)))

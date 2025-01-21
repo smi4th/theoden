@@ -1,7 +1,9 @@
-fonction fibo(n) {
+fonction func(n) {
+    res = 0;
     if (n<=1) {
-        return n;
+        res = 1;
     }
-    return fibo(n-1) + fibo(n-2);
+    return res;
 }
-a = fibo(10);
+
+v = func(10);

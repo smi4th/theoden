@@ -1,8 +1,7 @@
 fonction a(arg) {
     if (arg == 1) {
         return 1;
-    } else {
-        return a(arg - 1) + arg;
     }
+    return 0;
 }
-v = a(10);
+v = a(1);

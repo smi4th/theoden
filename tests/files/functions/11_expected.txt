@@ -1,7 +1,5 @@
 ---TEST OUTPUT---
 ---MEMORY---
-$__return__$ = 1
-v = 1
+v = 0
 ---FUNCTIONS---
-a = ('empty', ('linst', ('return', 1)))
-b = ('empty', ('linst', ('return', ('call', 'a', 'empty'))))
+func = (('param', 'n'), ('linst', ('linst', ('linst', ('assign', 'res', 0), 'empty'), ('if', ('<=', 'n', 1), ('linst', ('assign', 'res', 1), 'empty'), 'empty')), ('return', 'res')))
