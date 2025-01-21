@@ -137,7 +137,7 @@ def evalExpr(t):
     return evalOpertor(t[0], evalExpr(t[1]), evalExpr(t[2]))
 
 @wrapper
-def evalIntOperator(op, x, y):
+def evalNumberOperator(op, x, y, type):
     var = {
         '+'     : lambda x, y: x + y,
         '-'     : lambda x, y: x - y,
@@ -165,13 +165,14 @@ def evalIntOperator(op, x, y):
     if op in ['/', '%']:
         return ('float', var[op](x, y))
 
-    return ('int', var[op](x, y))
+    return (type, var[op](x, y))
 
 @wrapper
 def evalOpertor(op, x, y):
     if x[0] == y[0] == 'int':
-        # both are integers
-        return evalIntOperator(op, x[1], y[1])
+        return evalNumberOperator(op, x[1], y[1], 'int')
+    if x[0] == y[0] == 'float':
+        return evalNumberOperator(op, x[1], y[1], 'float')
 
 @wrapper
 def evalFunction(inst):

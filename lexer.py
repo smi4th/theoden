@@ -47,7 +47,7 @@ def t_NAME(t):
     return t
 
 def t_INTEGER(t): 
-    r'\d+'
+    r'(?<!\.)\b\d+\b(?!\.)'
     t.value = int(t.value) 
     return t
 

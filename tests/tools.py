@@ -7,7 +7,7 @@ if __name__ == '__main__':
 
     dirs = [
         # 'conditions',
-        'for',
+        # 'for',
         # 'functions',
         # 'while',
         # 'assign/add',
@@ -15,7 +15,7 @@ if __name__ == '__main__':
         # 'assign/div',
         # 'assign/mod',
         # 'assign/mul',
-        # 'assign/number',
+        'assign/number',
         # 'assign/sub',
     ]
 

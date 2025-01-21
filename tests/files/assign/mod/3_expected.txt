@@ -1,0 +1,4 @@
+---TEST OUTPUT---
+---MEMORY---
+a = ('float', 0.0)
+---FUNCTIONS---

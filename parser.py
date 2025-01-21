@@ -174,16 +174,28 @@ def p_expression_group(p):
     p[0] = p[2] 
     
 def p_expression_integer(p): 
-    'expression : INTEGER' 
-    p[0] = ('int', p[1])
+    '''expression : INTEGER
+    | MINUS INTEGER'''
+    if len(p)==2 :
+        p[0] = ('int',p[1])
+    else :
+        p[0] = ('int',-p[2])    
     
 def p_expression_float(p):
-    'expression : FLOAT'
-    p[0] = ('float', p[1])
+    '''expression : FLOAT
+    | MINUS FLOAT'''
+    if len(p)==2 :
+        p[0] = ('float',p[1])
+    else :
+        p[0] = ('float',-p[2])
 
-def p_expression_name(p): 
-    'expression : NAME' 
-    p[0] = ('var', p[1])
+def p_expression_name(p):
+    '''expression : NAME
+    | MINUS NAME'''
+    if len(p)==2 :
+        p[0] = ('var',p[1])
+    else :
+        p[0] = ('var',-p[2])
 
 def p_error(p):
     print("Syntax error in input!", p)
