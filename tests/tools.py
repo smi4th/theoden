@@ -16,8 +16,9 @@ if __name__ == '__main__':
         # 'assign/mod',
         # 'assign/mul',
         # 'assign/number',
-        'assign/chars',
+        # 'assign/chars',
         # 'assign/sub',
+        'assign/array',
     ]
 
     import os, argparse

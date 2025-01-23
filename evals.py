@@ -1,6 +1,6 @@
 # evals.py
 
-from utils import wrapper, flatten, Pile, prog, isTailRecursion
+from utils import wrapper, flatten, Pile, prog, flatten_tuple
 
 @wrapper
 def evalLinst(linst):
@@ -22,7 +22,7 @@ def evalInst(inst):
 
     match inst[0]:
         case 'assign':
-            prog.memoryStack[-1].setVar(inst[1], evalExpr(inst[2]))
+            assign(inst)
         case 'if':
             return evalCond(inst)
         case 'for':
@@ -43,6 +43,66 @@ def evalInst(inst):
             prog.error.crash()
 
     return inst
+
+@wrapper
+def assign(inst):
+    if inst[1] != 'array_access' and inst[2][0] != 'array':
+        prog.memoryStack[-1].setVar(inst[1], evalExpr(inst[2]))
+        return
+    
+    if inst[2][0] == 'array':
+
+        # print(transformArray(inst[2][1]))
+
+        # a = []
+        array = transformArray(inst[2][1])
+        if array[0] == 'expr':
+            array = array[1:]
+
+        if not isinstance(array[0], tuple):
+            array = (array,)
+
+        if array[0][0] == 'empty':
+            prog.memoryStack[-1].setVar(inst[1], array)
+            return
+        
+        array = list(array)
+
+        for i in range(len(array)):
+            array[i] = evalExpr(array[i])
+            
+        prog.memoryStack[-1].setVar(inst[1], tuple(array))
+        return
+        
+def transformArray(inst):
+    def extract_expressions(expr):
+        """
+        Fonction récursive pour extraire les sous-expressions d'une structure imbriquée.
+        Gère également les structures 'array'.
+        """
+        if expr[0] == 'expr':
+            # Parcours récursif sur les sous-éléments, en excluant le premier niveau ('expr').
+            expressions = []
+            for sub_expr in expr[1:]:
+                expressions.extend(extract_expressions(sub_expr))
+            return expressions
+        elif expr[0] == 'array':
+            # Si c'est une structure 'array', transformer les sous-éléments en tuples imbriqués.
+            arrays = []
+            for sub_expr in expr[1:]:
+                arrays.append(tuple(extract_expressions(sub_expr)))
+            return arrays
+        else:
+            # Si ce n'est ni 'expr' ni 'array', c'est une sous-expression valide.
+            return [expr]
+
+    # Extraire toutes les sous-expressions
+    flat_expressions = extract_expressions(inst)
+
+    # Reconstruire la structure finale
+    if len(flat_expressions) == 1 and isinstance(flat_expressions[0], tuple):
+        return flat_expressions[0]  # Cas où on obtient une seule structure 'array'.
+    return ('expr', *flat_expressions)
 
 dataPrint = []
 
@@ -125,6 +185,8 @@ def evalExpr(t):
         case 'bool':
             return t
         case 'char':
+            return t
+        case 'array':
             return t
 
     if t[0] == 'expr':

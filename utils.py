@@ -110,6 +110,16 @@ class Pile:
                 return
         self.p[-1][name] = value
 
+    def decompArray(self, name, values):
+        tmp = flatten_tuple(values)
+        length = tmp.count('expr')
+        res = []
+
+        for value in range(0, length*5, 5):
+            res.append(('expr', (tmp[value+length], (tmp[value+length+1], tmp[value+length+2]), (tmp[value+length+3], tmp[value+length+4]))))
+
+        return res
+
     def reverse(self):
         self.p = self.p[::-1]
     

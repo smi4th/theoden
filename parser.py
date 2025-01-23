@@ -146,8 +146,9 @@ def p_if(p):
         p[0] = ('if', p[3], p[6], ('else', p[10]))
     
 def p_statement_assign(p):
-    'statement : NAME EGAL expression'
-    p[0] = ('assign',p[1],p[3] )
+    '''statement : NAME EGAL expression
+    | array_access EGAL expression'''
+    p[0] = ('assign',p[1],p[3])
     
 def p_expression_binop_inf(p): 
     '''expression : expression INF expression
@@ -193,6 +194,14 @@ def p_expression_char(p):
     'expression : CHAR'
     p[0] = ('char',p[1])
 
+def p_expression_array(p):
+    '''expression : LBRACKET paramcall RBRACKET
+    | LBRACKET RBRACKET'''
+    if len(p)==3:
+        p[0] = ('array', 'empty')
+    else:
+        p[0] = ('array', p[2])
+
 def p_expression_name(p):
     '''expression : NAME
     | MINUS NAME'''
@@ -200,6 +209,10 @@ def p_expression_name(p):
         p[0] = ('var',p[1])
     else :
         p[0] = ('var',-p[2])
+
+def p_expression_array_access(p):
+    '''array_access : NAME LBRACKET expression RBRACKET'''
+    p[0] = ('array_access', p[1], p[3])
 
 def p_error(p):
     print("Syntax error in input!", p)

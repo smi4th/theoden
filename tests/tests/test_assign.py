@@ -97,3 +97,31 @@ def test_chars_1():
 def test_chars_2():
     system('py main.py -f tests/files/assign/chars/2.txt -t > tests/files/assign/chars/2.out.txt')
     assert check('tests/files/assign/chars/2.out.txt', 'tests/files/assign/chars/2_expected.txt')
+
+def test_array_1():
+    system('py main.py -f tests/files/assign/array/1.txt -t > tests/files/assign/array/1.out.txt')
+    assert check('tests/files/assign/array/1.out.txt', 'tests/files/assign/array/1_expected.txt')
+
+def test_array_2():
+    system('py main.py -f tests/files/assign/array/2.txt -t > tests/files/assign/array/2.out.txt')
+    assert check('tests/files/assign/array/2.out.txt', 'tests/files/assign/array/2_expected.txt')
+
+def test_array_3():
+    system('py main.py -f tests/files/assign/array/3.txt -t > tests/files/assign/array/3.out.txt')
+    assert check('tests/files/assign/array/3.out.txt', 'tests/files/assign/array/3_expected.txt')
+
+def test_array_4():
+    system('py main.py -f tests/files/assign/array/4.txt -t > tests/files/assign/array/4.out.txt')
+    assert check('tests/files/assign/array/4.out.txt', 'tests/files/assign/array/4_expected.txt')
+
+def test_array_5():
+    system('py main.py -f tests/files/assign/array/5.txt -t > tests/files/assign/array/5.out.txt')
+    assert check('tests/files/assign/array/5.out.txt', 'tests/files/assign/array/5_expected.txt')
+
+def test_array_6():
+    system('py main.py -f tests/files/assign/array/6.txt -t > tests/files/assign/array/6.out.txt')
+    assert check('tests/files/assign/array/6.out.txt', 'tests/files/assign/array/6_expected.txt')
+
+def test_array_7():
+    system('py main.py -f tests/files/assign/array/7.txt -t > tests/files/assign/array/7.out.txt')
+    assert check('tests/files/assign/array/7.out.txt', 'tests/files/assign/array/7_expected.txt')

@@ -14,7 +14,7 @@ reserved={
         'return':'RETURN',
     }
 
-tokens = [ 'INTEGER', 'FLOAT', 'CHAR', 'MINUS', 'PLUS','TIMES','DIVIDE', 'MODULO', 'LPAREN', 'LBRA', 'RBRA',
+tokens = [ 'INTEGER', 'FLOAT', 'CHAR', 'MINUS', 'PLUS','TIMES','DIVIDE', 'MODULO', 'LPAREN', 'LBRA', 'RBRA', 'LBRACKET', 'RBRACKET',
           'RPAREN', 'OR', 'AND', 'SEMI', 'EGAL', 'NAME', 'INF', 'SUP', 'SUPEG',
           'EGALEGAL','INFEG', 'COMMA','INC','DEC']+ list(reserved.values())
 
@@ -27,6 +27,8 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)' 
 t_LBRA = r'\{'
 t_RBRA = r'\}'
+t_LBRACKET = r'\['
+t_RBRACKET = r'\]'
 t_OR = r'\|'
 t_AND = r'\&'
 t_SEMI = r';'
