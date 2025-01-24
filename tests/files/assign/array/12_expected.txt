@@ -1,0 +1,4 @@
+Syntax error in input! LexToken(LBRACKET,'[',2,23)
+---TEST OUTPUT---
+---MEMORY---
+---FUNCTIONS---

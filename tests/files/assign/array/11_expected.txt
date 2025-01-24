@@ -1,0 +1,4 @@
+---TEST OUTPUT---
+---MEMORY---
+a = (('int', 1), ('int', 2), ('int', 3), ('int', 6), ('int', 5))
+---FUNCTIONS---

@@ -42,6 +42,9 @@ t_COMMA = r'\,'
 t_INC = r'\+\+'
 t_DEC = r'\-\-'
 
+def t_COMMENT(t):
+    r'\#.*'
+    pass
 
 def t_NAME(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'

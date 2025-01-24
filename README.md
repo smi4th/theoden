@@ -21,7 +21,7 @@ python3 -m pip install -r requirements.txt
 Pour exécuter le compilateur, utilisez la commande suivante :
 __windows__ :
 ```bash
-py main.py
+python main.py
 ```
 __linux__ :
 ```bash

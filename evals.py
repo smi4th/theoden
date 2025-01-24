@@ -46,14 +46,11 @@ def evalInst(inst):
 
 @wrapper
 def assign(inst):
-    if inst[1] != 'array_access' and inst[2][0] != 'array':
+    if inst[1][0] != 'array_access' and inst[2][0] != 'array':
         prog.memoryStack[-1].setVar(inst[1], evalExpr(inst[2]))
         return
     
     if inst[2][0] == 'array':
-
-        # print(transformArray(inst[2][1]))
-
         # a = []
         array = transformArray(inst[2][1])
         if array[0] == 'expr':
@@ -65,14 +62,35 @@ def assign(inst):
         if array[0][0] == 'empty':
             prog.memoryStack[-1].setVar(inst[1], array)
             return
-        
+
         array = list(array)
 
         for i in range(len(array)):
             array[i] = evalExpr(array[i])
-            
+
         prog.memoryStack[-1].setVar(inst[1], tuple(array))
         return
+
+    # a[0] = 1
+    array = prog.memoryStack[-1].search(inst[1][1])
+    if array is None:
+        prog.error.push(f"Variable <{inst[1][1]}> not defined in this scope")
+        prog.error.crash()
+
+    index = evalExpr(inst[1][2])
+
+    if index[0] != 'int':
+        prog.error.push(f"Index must be an integer")
+        prog.error.crash()
+
+    if len(array) <= index[1] or array[0] == ('empty',):
+        prog.error.push(f"Index out of range")
+        prog.error.crash()
+
+    array = list(array)
+    array[index[1]] = evalExpr(inst[2])
+
+    prog.memoryStack[-1].setVar(inst[1][1], tuple(array))
         
 def transformArray(inst):
     def extract_expressions(expr):
