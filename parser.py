@@ -149,7 +149,18 @@ def p_statement_assign(p):
     '''statement : NAME EGAL expression
     | array_access EGAL expression'''
     p[0] = ('assign',p[1],p[3])
-    
+
+def p_expression_op_aff(p):
+
+    '''statement : NAME PLUSEGAL expression
+    | NAME MINUSEGAL expression
+    | NAME TIMESEGAL expression
+    | NAME DIVIDEEGAL expression
+    | NAME MODULOEGAL expression
+    '''
+
+    p[0] = ('op_aff',p[1],p[2][0],p[3])
+
 def p_expression_binop_inf(p): 
     '''expression : expression INF expression
     | expression INFEG expression

@@ -152,7 +152,7 @@ class Errors(Pile):
 class Program:
     def __init__(self):
         self.callPile = Pile()
-        self.callPile.block_keywords = ['functions', 'if', 'for', 'while', 'assign', 'call', 'print']
+        self.callPile.block_keywords = ['functions', 'if', 'for', 'while', 'assign', 'call', 'print','op_aff']
         self.callPile.function_keywords = ['main', 'linst']
 
         self.error = Errors()

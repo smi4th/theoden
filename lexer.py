@@ -16,7 +16,8 @@ reserved={
 
 tokens = [ 'INTEGER', 'FLOAT', 'CHAR', 'MINUS', 'PLUS','TIMES','DIVIDE', 'MODULO', 'LPAREN', 'LBRA', 'RBRA', 'LBRACKET', 'RBRACKET',
           'RPAREN', 'OR', 'AND', 'SEMI', 'EGAL', 'NAME', 'INF', 'SUP', 'SUPEG',
-          'EGALEGAL','INFEG', 'COMMA','INC','DEC']+ list(reserved.values())
+          'EGALEGAL','INFEG', 'COMMA','INC','DEC',
+          'PLUSEGAL','TIMESEGAL','MODULOEGAL','MINUSEGAL','DIVIDEEGAL']+ list(reserved.values())
 
 t_PLUS = r'\+' 
 t_MINUS = r'-' 
@@ -41,6 +42,11 @@ t_EGALEGAL = r'\=\='
 t_COMMA = r'\,'
 t_INC = r'\+\+'
 t_DEC = r'\-\-'
+t_PLUSEGAL = r'\+\='
+t_TIMESEGAL = r'\*\='
+t_MODULOEGAL = r'\%\='
+t_MINUSEGAL = r'\-\='
+t_DIVIDEEGAL = r'\/\='
 
 def t_COMMENT(t):
     r'\#.*'

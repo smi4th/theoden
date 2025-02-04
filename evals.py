@@ -13,14 +13,17 @@ def evalInst(inst):
     if inst in ['empty', 'linst']:
         return
 
+    print("inst", inst,type(inst), isinstance(inst, tuple))
+
     if not isinstance(inst, tuple):
         prog.error.push(f"Instruction <{inst}> not recognized")
         prog.error.crash()
 
     if inst[0] == 'linst':
         return evalLinst(inst[1:])
-
     match inst[0]:
+        case 'op_aff':
+            evalAffOp(inst)
         case 'assign':
             assign(inst)
         case 'if':
@@ -46,6 +49,7 @@ def evalInst(inst):
 
 @wrapper
 def assign(inst):
+    print(inst)
     if inst[1][0] != 'array_access' and inst[2][0] != 'array':
         prog.memoryStack[-1].setVar(inst[1], evalExpr(inst[2]))
         return
@@ -91,7 +95,14 @@ def assign(inst):
     array[index[1]] = evalExpr(inst[2])
 
     prog.memoryStack[-1].setVar(inst[1][1], tuple(array))
-        
+
+@wrapper
+def evalAffOp(inst):
+
+    inst = ('assign', inst[1], (inst[2], ('var', inst[1]), inst[3]))
+
+    assign(inst)
+
 def transformArray(inst):
     def extract_expressions(expr):
         """
